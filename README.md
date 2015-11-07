@@ -10,6 +10,9 @@ This project was generated with the [Angular Full-Stack Generator](https://githu
 4)  Bonus User Story: As an unauthenticated user, when I login I should not have to search again.
 
 ### TODO
+<ol>
+<li>test</li>
+</ol>
 1)  (US:2-4)  Setup local auth 
 2)  (US:2-3)  Add API end point to add/remove user from a bar
 3)  (US:1)    Add API end point to get bars/clubs near user search location from Yelp to include other users who have added themselves to the bar 
