@@ -12,7 +12,7 @@ This project was generated with the [Angular Full-Stack Generator](https://githu
 
 ### TODO
 <ol>
-<li>(US:2-4)  Setup local auth</li>
+<li><strike>(US:2-4)  Setup local auth</strike></li>
 <li>(US:2-3)  Add API end point to add/remove user from a bar</li>
 <li>(US:  1)  Add API end point to get bars/clubs near user search location from Yelp to include other users who have added themselves to the bar</li>
 <li>(US:  1)  Create view with nearby bars with search filter
