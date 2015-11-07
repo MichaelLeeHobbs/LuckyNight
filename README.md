@@ -14,16 +14,16 @@ This project was generated with the [Angular Full-Stack Generator](https://githu
 <ol>
 <li>(US:2-4)  Setup local auth</li>
 <li>(US:2-3)  Add API end point to add/remove user from a bar</li>
-<li>(US:1)    Add API end point to get bars/clubs near user search location from Yelp to include other users who have added themselves to the bar</li>
-<li>(US:1)    Create view with nearby bars with search filter
+<li>(US:  1)  Add API end point to get bars/clubs near user search location from Yelp to include other users who have added themselves to the bar</li>
+<li>(US:  1)  Create view with nearby bars with search filter
   <ol>
     <li>If user is logged in check if they have a stored search, if so use that search initially</li>
     <li>If user is not logged in check if user has a search stored in cookies</li>
     <li>If user searches store it/update stored search</li>
   </ol>
 </li>
-<li>(US:4)    Store users search in cookie for when they are not logged in</li>
-<li>(US:4)    Store users search on server, should this be in the users table or a new table?</li>
+<li>(US:  4)  Store users search in cookie for when they are not logged in</li>
+<li>(US:  4)  Store users search on server, should this be in the users table or a new table?</li>
 <li>(US:1-4)  Deploy to Heroku</li>
 <li>(US:1-4)  Setup auth on Heroku</li>
 </ol>
