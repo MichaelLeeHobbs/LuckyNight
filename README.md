@@ -11,7 +11,7 @@ This project was generated with the [Angular Full-Stack Generator](https://githu
 
 ### TODO
 <ol>
-<li>test</li>
+<li>test</li> 
 </ol>
 1)  (US:2-4)  Setup local auth 
 2)  (US:2-3)  Add API end point to add/remove user from a bar
