@@ -5,7 +5,9 @@ var Schema = mongoose.Schema;
 
 var BarSchema = new Schema({
   name: String,
-  info: String,
+  date: Number,
+  visitor: String,
+  visitorId: String,
   active: Boolean
 });
 
