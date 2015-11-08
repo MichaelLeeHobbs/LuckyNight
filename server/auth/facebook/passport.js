@@ -26,7 +26,7 @@ exports.setup = function(User, config) {
           });
           user.saveAsync()
             .then(function(user) {
-              return done(null, user);
+              return done(null, user[0]);
             })
             .catch(function(err) {
               return done(err);
