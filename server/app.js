@@ -30,6 +30,14 @@ require('./config/socketio')(socketio);
 require('./config/express')(app);
 require('./routes')(app);
 
+// Setup Yelp
+var yelp = require("yelp").createClient({
+  consumer_key: config.yelp.consumer_key,
+  consumer_secret: config.yelp.consumer_secret,
+  token: config.yelp.token,
+  token_secret: config.yelp.token_secret
+});
+
 // Start server
 function startServer() {
   server.listen(config.port, config.ip, function() {

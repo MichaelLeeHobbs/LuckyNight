@@ -60,6 +60,13 @@ var all = {
     clientID:     process.env.GOOGLE_ID || 'id',
     clientSecret: process.env.GOOGLE_SECRET || 'secret',
     callbackURL:  (process.env.DOMAIN || '') + '/auth/google/callback'
+  },
+
+  yelp: {
+    consumer_key:     process.env.YELP_ID || 'id',
+    consumer_secret:  process.env.YELP_SECRET || 'secret',
+    token:            process.env.YELP_TOKEN || 'token',
+    token_secret:     process.env.YELP_TOKEN_SECRET || 'token_secret'
   }
 };
 
