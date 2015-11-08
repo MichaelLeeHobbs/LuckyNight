@@ -1,6 +1,7 @@
 /**
  * Using Rails-like standard naming convention for endpoints.
  * GET     /api/bars              ->  index
+ * GET     /api/bars/:location    ->  index by location
  * POST    /api/bars              ->  create
  * GET     /api/bars/:id          ->  show
  * PUT     /api/bars/:id          ->  update
@@ -62,6 +63,15 @@ function removeEntity(res) {
 // Gets a list of Bars
 exports.index = function(req, res) {
   Bar.findAsync()
+    .then(responseWithResult(res))
+    .catch(handleError(res));
+};
+
+// Gets a list of Bars by location
+exports.indexByLocation = function(req, res) {
+  var today = new Date();
+  var reqDate = (req.body.date !== undefined) ? String(req.body.date) : (today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear());
+  Bar.findAsync({date:reqDate})
     .then(responseWithResult(res))
     .catch(handleError(res));
 };
