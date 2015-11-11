@@ -3,13 +3,17 @@
 
 function MainController($scope, $http, socket) {
   var self = this;
-  this.awesomeThings = [];
+  self.results = [];
+  self.hasResults = false;
 
-  $http.get('/api/things').then(function(response) {
-    self.awesomeThings = response.data;
-    socket.syncUpdates('thing', self.awesomeThings);
-  });
-
+  self.search = function () {
+    $http.get('/api/bars/' + self.searchField).then(function(response) {
+      self.results = response.data;
+      self.hasResults = true;
+      socket.syncUpdates('bar', self.results);
+    });
+  };
+/*
   this.addThing = function() {
     if (self.newThing === '') {
       return;
@@ -19,11 +23,11 @@ function MainController($scope, $http, socket) {
   };
 
   this.deleteThing = function(thing) {
-    $http.delete('/api/things/' + thing._id);
+    $http.delete('/api/bars/' + thing._id);
   };
-
+*/
   $scope.$on('$destroy', function() {
-    socket.unsyncUpdates('thing');
+    socket.unsyncUpdates('bar');
   });
 }
 

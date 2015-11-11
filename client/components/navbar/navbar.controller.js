@@ -2,10 +2,10 @@
 
 angular.module('luckyNightApp')
   .controller('NavbarCtrl', function ($scope, Auth) {
-    $scope.menu = [{
+    $scope.menu = [/*{
       'title': 'Home',
       'state': 'main'
-    }];
+    }*/];
 
     $scope.isCollapsed = true;
     $scope.isLoggedIn = Auth.isLoggedIn;
