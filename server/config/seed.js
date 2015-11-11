@@ -77,12 +77,12 @@ var createBars = function (usr) {
       var todayDate   = (today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear())
       var anotherDate = (today.getDate() + '-' + (today.getMonth() + 1) + '-' + 1986);
       Bar.create({
-        name: 'TestDive',
+        name: 'Oasis',
         date: todayDate,
         visitor: usr.name,
         visitorId: usr._id
       },{
-        name: 'TestDive',
+        name: 'Oasis',
         date: anotherDate,
         visitor: usr.name,
         visitorId: usr._id

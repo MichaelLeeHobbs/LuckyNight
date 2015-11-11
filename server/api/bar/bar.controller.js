@@ -10,19 +10,22 @@
 
 'use strict';
 
-var _ = require('lodash');
+import config from '../../config/yelp';
+var yelp = require("../../config/yelp");
+
+var _   = require('lodash');
 var Bar = require('./bar.model');
 
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
-  return function(err) {
+  return function (err) {
     res.status(statusCode).send(err);
   };
 }
 
 function responseWithResult(res, statusCode) {
   statusCode = statusCode || 200;
-  return function(entity) {
+  return function (entity) {
     if (entity) {
       res.status(statusCode).json(entity);
     }
@@ -30,7 +33,7 @@ function responseWithResult(res, statusCode) {
 }
 
 function handleEntityNotFound(res) {
-  return function(entity) {
+  return function (entity) {
     if (!entity) {
       res.status(404).end();
       return null;
@@ -40,20 +43,20 @@ function handleEntityNotFound(res) {
 }
 
 function saveUpdates(updates) {
-  return function(entity) {
+  return function (entity) {
     var updated = _.merge(entity, updates);
     return updated.saveAsync()
-      .spread(function(updated) {
+      .spread(function (updated) {
         return updated;
       });
   };
 }
 
 function removeEntity(res) {
-  return function(entity) {
+  return function (entity) {
     if (entity) {
       return entity.removeAsync()
-        .then(function() {
+        .then(function () {
           res.status(204).end();
         });
     }
@@ -61,23 +64,56 @@ function removeEntity(res) {
 }
 
 // Gets a list of Bars
-exports.index = function(req, res) {
+exports.index = function (req, res) {
   Bar.findAsync()
     .then(responseWithResult(res))
     .catch(handleError(res));
 };
 
 // Gets a list of Bars by location
-exports.indexByLocation = function(req, res) {
-  var today = new Date();
+exports.indexByLocation = function (req, res) {
+  var today   = new Date();
   var reqDate = (req.body.date !== undefined) ? String(req.body.date) : (today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear());
-  Bar.findAsync({date:reqDate})
-    .then(responseWithResult(res))
-    .catch(handleError(res));
+
+  // Setup Yelp
+  var yelpApi = require("yelp").createClient({
+    consumer_key:    yelp.CONSUMER_KEY,
+    consumer_secret: yelp.CONSUMER_SECRET,
+    token:           yelp.TOKEN,
+    token_secret:    yelp.TOKEN_SECRET
+  });
+
+  yelpApi.search({category_filter: "nightlife", location: req.params.location}, function (error, searchResult) {
+    var async = require("async");
+    async.each(
+      searchResult.businesses,
+      function (searchResultElement, callback) {
+        searchResultElement.visitors = [];
+        Bar.findAsync({name: searchResultElement.name, date: reqDate})
+          .then(function (findResult) {
+            findResult.forEach(function (ele) {
+              console.log(ele);
+              searchResultElement.visitors.push({visitor: ele.visitor, visitorId: ele.visitorId});
+            });
+          })
+          // log errors
+          .catch(function(res){
+            console.log(res);
+          })
+          .then(callback);
+      },
+      function (err) {
+        console.log('err: ' + err);
+        res.json(searchResult.businesses);
+        console.log('sent response');
+        //console.log(searchResult.businesses);
+      }
+    );
+  });
 };
 
 // Gets a single Bar from the DB
-exports.show = function(req, res) {
+exports.show = function (req, res) {
   Bar.findByIdAsync(req.params.id)
     .then(handleEntityNotFound(res))
     .then(responseWithResult(res))
@@ -85,14 +121,14 @@ exports.show = function(req, res) {
 };
 
 // Creates a new Bar in the DB
-exports.create = function(req, res) {
+exports.create = function (req, res) {
   Bar.createAsync(req.body)
     .then(responseWithResult(res, 201))
     .catch(handleError(res));
 };
 
 // Updates an existing Bar in the DB
-exports.update = function(req, res) {
+exports.update = function (req, res) {
   if (req.body._id) {
     delete req.body._id;
   }
@@ -104,7 +140,7 @@ exports.update = function(req, res) {
 };
 
 // Deletes a Bar from the DB
-exports.destroy = function(req, res) {
+exports.destroy = function (req, res) {
   Bar.findByIdAsync(req.params.id)
     .then(handleEntityNotFound(res))
     .then(removeEntity(res))
