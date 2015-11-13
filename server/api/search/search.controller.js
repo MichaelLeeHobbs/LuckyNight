@@ -77,25 +77,31 @@ exports.index = function (req, res) {
 
 // Gets a single Search from the DB
 exports.userShow = function (req, res) {
-  // reject if not the owner of the search
-  if (!isOwnerOfReq(req)) {
-    return res.status(401).end();
-  }
   Search.findAsync({userId: req.params.id})
     .then(handleEntityNotFound(res))
-    .then(responseWithResult(res))
+    .then(function (result) {
+      if (result.userId === req.user._id) {
+        responseWithResult(res)(result);
+      } else {
+        // reject if not the owner of record
+        return res.status(403).end();
+      }
+    })
     .catch(handleError(res));
 };
 
 // Gets a single Search by userId from the DB
 exports.show = function (req, res) {
-  // reject if not the owner of the search
-  if (!isOwnerOfReq(req)) {
-    return res.status(401).end();
-  }
   Search.findByIdAsync(req.params.userId)
     .then(handleEntityNotFound(res))
-    .then(responseWithResult(res))
+    .then(function (result) {
+      if (result.userId === req.user._id) {
+        responseWithResult(res)(result);
+      } else {
+        // reject if not the owner of record
+        return res.status(403).end();
+      }
+    })
     .catch(handleError(res));
 };
 
@@ -103,7 +109,7 @@ exports.show = function (req, res) {
 exports.create = function (req, res) {
   // reject if not the owner of the search or adim
   if (!isOwnerOfReq(req)) {
-    return res.status(401).end();
+    return res.status(403).end();
   }
   Search.createAsync(req.body)
     .then(responseWithResult(res, 201))
@@ -112,16 +118,19 @@ exports.create = function (req, res) {
 
 // Updates an existing Search in the DB
 exports.update = function (req, res) {
-  // reject if not the owner of the search or adim
-  if (!isOwnerOfReq(req)) {
-    return res.status(401).end();
-  }
   if (req.body._id) {
     delete req.body._id;
   }
   Search.findByIdAsync(req.params.id)
     .then(handleEntityNotFound(res))
-    .then(saveUpdates(req.body))
+    .then(function (result) {
+      if (result.userId === req.user._id) {
+        saveUpdates(req.body)(res);
+      } else {
+        // reject if not the owner of record
+        return res.status(403).end();
+      }
+    })
     .then(responseWithResult(res))
     .catch(handleError(res));
 };
@@ -130,10 +139,17 @@ exports.update = function (req, res) {
 exports.destroy = function (req, res) {
   // reject if not the owner of the search or adim
   if (!isOwnerOfReq(req)) {
-    return res.status(401).end();
+    return res.status(403).end();
   }
   Search.findByIdAsync(req.params.id)
     .then(handleEntityNotFound(res))
-    .then(removeEntity(res))
+    .then(function (result) {
+      if (result.userId === req.user._id) {
+        removeEntity(res)(result);
+      } else {
+        // reject if not the owner of record
+        return res.status(403).end();
+      }
+    })
     .catch(handleError(res));
 };
