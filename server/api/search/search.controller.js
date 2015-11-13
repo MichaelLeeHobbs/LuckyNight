@@ -92,7 +92,7 @@ exports.userShow = function (req, res) {
 
 // Gets a single Search by userId from the DB
 exports.show = function (req, res) {
-  Search.findByIdAsync(req.params.userId)
+  Search.findByIdAsync(req.params.id)
     .then(handleEntityNotFound(res))
     .then(function (result) {
       if (result.userId === req.user._id) {
@@ -137,10 +137,6 @@ exports.update = function (req, res) {
 
 // Deletes a Search from the DB
 exports.destroy = function (req, res) {
-  // reject if not the owner of the search or adim
-  if (!isOwnerOfReq(req)) {
-    return res.status(403).end();
-  }
   Search.findByIdAsync(req.params.id)
     .then(handleEntityNotFound(res))
     .then(function (result) {
