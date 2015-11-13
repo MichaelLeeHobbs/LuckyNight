@@ -20,6 +20,7 @@ This project was generated with the [Angular Full-Stack Generator](https://githu
     <li>004.1 <strike>If user is logged in check if they have a stored search, if so use that search initially</strike></li>
     <li>004.2 <strike>If user is not logged in check if user has a search stored in cookies</strike></li>
     <li>004.3 <strike>If user searches store it/update stored search</strike></li>
+    <li>004.4 Style view</li>
   </ol>
 </li>
 <li>Task 005: <strike>(US:  4)  Store users search in cookie for when they are not logged in</strike></li>
