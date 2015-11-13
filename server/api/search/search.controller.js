@@ -76,12 +76,24 @@ exports.index = function (req, res) {
 };
 
 // Gets a single Search from the DB
+exports.userShow = function (req, res) {
+  // reject if not the owner of the search
+  if (!isOwnerOfReq(req)) {
+    return res.status(401).end();
+  }
+  Search.findAsync({userId: req.params.id})
+    .then(handleEntityNotFound(res))
+    .then(responseWithResult(res))
+    .catch(handleError(res));
+};
+
+// Gets a single Search by userId from the DB
 exports.show = function (req, res) {
   // reject if not the owner of the search
   if (!isOwnerOfReq(req)) {
     return res.status(401).end();
   }
-  Search.findByIdAsync(req.params.id)
+  Search.findByIdAsync(req.params.userId)
     .then(handleEntityNotFound(res))
     .then(responseWithResult(res))
     .catch(handleError(res));

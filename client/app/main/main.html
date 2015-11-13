@@ -41,7 +41,7 @@
             </div>
             <div class="col-sm-9">
               <a href="{{result.url}}" target="_blank" tooltip="Open Yelp Review">{{result.name}}</a>
-              <span class="pull-right">{{result.visitors.length}} GOING</span>
+              <span ng-click="main.toggleGoing(result)" class="pull-right btn btn-default">{{result.visitors.length}} GOING</span>
 
               <p class="pull-right">&quot;{{result.snippet_text}}&quot;</p>
 
