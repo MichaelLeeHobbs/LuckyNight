@@ -1,7 +1,7 @@
 'use strict';
 (function() {
 
-function MainController($scope, $http, socket) {
+function MainController($scope, $http, socket, $window) {
   var self = this;
   self.results = [];
   self.hasResults = false;
@@ -12,6 +12,10 @@ function MainController($scope, $http, socket) {
       self.hasResults = true;
       socket.syncUpdates('bar', self.results);
     });
+  };
+
+  self.openNew = function (url) {
+    $window.open(url);
   };
 /*
   this.addThing = function() {

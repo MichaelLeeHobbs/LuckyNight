@@ -93,7 +93,7 @@ exports.indexByLocation = function (req, res) {
           .then(function (findResult) {
             findResult.forEach(function (ele) {
               console.log(ele);
-              searchResultElement.visitors.push({visitor: ele.visitor, visitorId: ele.visitorId});
+              searchResultElement.visitors.push({name: ele.visitor, id: ele.visitorId});
             });
           })
           // log errors

@@ -83,6 +83,11 @@ var createBars = function (usr) {
         visitorId: usr._id
       },{
         name: 'Oasis',
+        date: todayDate,
+        visitor: 'FakeUser',
+        visitorId: -999
+      },{
+        name: 'Oasis',
         date: anotherDate,
         visitor: usr.name,
         visitorId: usr._id

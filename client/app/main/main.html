@@ -17,6 +17,7 @@
 <div class="container">
   <form class="thing-form">
     <label>Check Out an Area</label>
+
     <p class="input-group">
       <input type="text" class="form-control" placeholder="Type a location here" ng-model="main.searchField">
       <span class="input-group-btn">
@@ -30,11 +31,42 @@
 <div ng-hide="!main.hasResults" class="container">
   <div class="row">
     <div class="col-lg-12">
-      <h1 class="page-header">Night Life Locations near: {{main.searchField}}</h1>
-      <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="result in main.results">
-        <li><a href="#" tooltip="{{result.info}}">{{result.name}}
-          <button type="button" class="close" ng-click="main.deleteThing(result)">&times;</button>
-        </a></li>
+      <h1 class="page-header">Night Life Locations Near: {{main.searchField}}</h1>
+      <input type="text" class="form-control" placeholder="Start typing to filter results" ng-model="main.filter">
+      <ul class="nav col-sm-12" ng-repeat="result in main.results | filter:main.filter">
+        <li>
+          <div class="row">
+            <div class="col-sm-2">
+              <img ng-src="{{result.image_url}}">
+            </div>
+            <div class="col-sm-9">
+              <a href="{{result.url}}" target="_blank" tooltip="Open Yelp Review">{{result.name}}</a>
+              <span class="pull-right">{{result.visitors.length}} GOING</span>
+
+              <p class="pull-right">&quot;{{result.snippet_text}}&quot;</p>
+
+              <p ng-hide="result.visitors.length == 0">Who's Going:
+                <span class="btn btn-social btn-default text-button" ng-repeat="visitor in result.visitors">{{visitor.name}}</span>
+              </p>
+            </div>
+            <div class="col-sm-1">
+              <button ng-hide="result.showMore" type="button" class="close" ng-click="result.showMore = true" tooltip="More">&blacktriangledown;</button>
+              <button ng-hide="!result.showMore" type="button" class="close" ng-click="result.showMore = false" tooltip="Less">&blacktriangle;</button>
+            </div>
+          </div>
+          <div ng-hide="!result.showMore" class="row">
+            <div class="col-sm-12">
+              <dl>
+                <dt>Phone:</dt>
+                <dd>{{result.phone}}</dd>
+                <dt>Address:</dt>
+                <dd>{{result.location.display_address[0]}}</dd>
+                <dd>{{result.location.display_address[1]}}</dd>
+                <dd>{{result.location.display_address[2]}}</dd>
+              </dl>
+            </div>
+          </div>
+        </li>
       </ul>
     </div>
   </div>
