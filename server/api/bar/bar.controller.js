@@ -85,19 +85,16 @@ exports.indexByLocation = function (req, res) {
 
   yelpApi.search({category_filter: "nightlife", location: req.params.location}, function (error, searchResult) {
     var async = require("async");
-    async.each(
-      searchResult.businesses,
-      function (searchResultElement, callback) {
+    async.each(searchResult.businesses, function (searchResultElement, callback) {
         searchResultElement.visitors = [];
-        Bar.findAsync({name: searchResultElement.name, date: reqDate})
+        Bar.findAsync({yelpId: searchResultElement.id, date: reqDate})
           .then(function (findResult) {
             findResult.forEach(function (ele) {
-              console.log(ele);
-              searchResultElement.visitors.push({name: ele.visitor, id: ele.visitorId});
+              searchResultElement.visitors.push({name: ele.visitor, visitorId: ele.visitorId, recId: ele._id});
             });
           })
           // log errors
-          .catch(function(res){
+          .catch(function (res) {
             console.log(res);
           })
           .then(callback);
@@ -122,8 +119,19 @@ exports.show = function (req, res) {
 
 // Creates a new Bar in the DB
 exports.create = function (req, res) {
-  Bar.createAsync(req.body)
-    .then(responseWithResult(res, 201))
+  Bar.findAsync({yelpId: req.body.yelpId, date: req.body.date, visitorId: req.body.visitorId})
+    .then(function (result) {
+      // if record already exist do not create new record
+      if (result.length > 0) {
+        responseWithResult(res, 304)(result);
+      }
+      // else create record
+      else {
+        Bar.createAsync(req.body)
+          .then(responseWithResult(res, 201))
+          .catch(handleError(res));
+      }
+    })
     .catch(handleError(res));
 };
 
