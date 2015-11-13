@@ -74,19 +74,22 @@ var createBars = function (usr) {
   Bar.find({}).removeAsync()
     .then(function () {
       var today       = new Date();
-      var todayDate   = (today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear())
+      var todayDate   = (today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear());
       var anotherDate = (today.getDate() + '-' + (today.getMonth() + 1) + '-' + 1986);
       Bar.create({
+        yelpId: 'oasis-san-francisco-3',
         name: 'Oasis',
         date: todayDate,
         visitor: usr.name,
         visitorId: usr._id
       },{
+        yelpId: 'oasis-san-francisco-3',
         name: 'Oasis',
         date: todayDate,
         visitor: 'FakeUser',
         visitorId: -999
       },{
+        yelpId: 'oasis-san-francisco-3',
         name: 'Oasis',
         date: anotherDate,
         visitor: usr.name,
