@@ -17,16 +17,17 @@
         socket.syncUpdates('bar', self.results);
 
         if (Auth.isLoggedIn()) {
-
           if (self.storedSearchId === undefined) {
-            $http.post('/api/searchs', {userId: currentUser._id, search: self.searchField});
+            $http.post('/api/searchs', {userId: currentUser._id, search: self.searchField})
+              .then(function (res) {
+                self.storedSearchId = res.data._id;
+              });
           }
           else {
-            $http.put('/api/searchs' + self.storedSearchId, {userId: currentUser._id, search: self.searchField});
+            console.log('storeSearchId: ' + self.storedSearchId);
+            $http.put('/api/searchs/' + self.storedSearchId, {userId: currentUser._id, search: self.searchField});
           }
         }
-
-
       });
       $cookies.put(cookieLuckyNightSearch, self.searchField);
     };
@@ -36,27 +37,26 @@
     };
 
     self.toggleGoing = function (bussiness) {
-      var found;
-      var recId;
-      bussiness.visitors.forEach(function (ele) {
+      var found = bussiness.visitors.some(function (ele, i, arr) {
         console.log(ele.visitorId);
         console.log(currentUser._id);
         if (ele.visitorId === currentUser._id) {
-          found = true;
-          recId = ele.recId;
+          $http.delete('/api/bars/' + ele.recId);
+          arr.splice(i, 1);
         }
       });
 
-      if (found) {
-        $http.delete('/api/bars/' + recId);
-      } else {
+      if (!found) {
         var today = new Date();
-        $http.post('/api/bars/',  {
-            yelpId: bussiness.id,
-            name: bussiness.name,
-            date: (today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear()),
-            visitor: currentUser.name,
-            visitorId: currentUser._id
+        $http.post('/api/bars/', {
+          yelpId:    bussiness.id,
+          name:      bussiness.name,
+          date:      (today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear()),
+          visitor:   currentUser.name,
+          visitorId: currentUser._id
+        })
+        .then(function(res){
+            bussiness.visitors.push({name: currentUser.name, visitorId: currentUser._id, recId: res.data._id});
           });
       }
     };
@@ -85,29 +85,43 @@
         // check if user has stored search
         if (Auth.isLoggedIn()) {
           console.log('logged in getting search');
-          // todo get storedSearch from user profile
-          $http.get('/api/searchs/user/' + currentUser._id).then(
+
+          // todo remove debug
+          $http.get('/api/searchs').then(function(res) {
+            console.log('search db dump');
+            console.log(res);
+          });
+
+          $http.get('/api/searchs/me').then(
             // get store search
             function (response) {
               console.log(response);
-              resolve({search: response.data[0].search,  id: response.data[0]._id});
+              if (response.data.length > 0) {
+                console.log('using server search');
+                resolve({search: response.data[0].search, id: response.data[0]._id});
+              } else {
+                console.log('using cookie search');
+                resolve($cookies.get(cookieLuckyNightSearch));
+              }
+
             },
             // fall back to cookie
-            function (res) {
+            function () {
               console.log('fallback');
-              resolve($cookies.get(cookieLuckyNightSearch));
+              console.log('using cookie search');
+              resolve({search: $cookies.get(cookieLuckyNightSearch), id: undefined});
             });
         }
         // else check if they have stored search in cookie
         else {
-          resolve({search: $cookies.get(cookieLuckyNightSearch),  id: undefined});
+          resolve({search: $cookies.get(cookieLuckyNightSearch), id: undefined});
         }
       });
     }
 
     getSearch().then(function (result) {
       if (result !== undefined) {
-        self.searchField = result.search;
+        self.searchField    = result.search;
         self.storedSearchId = result.id;
         self.search();
       }
