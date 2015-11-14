@@ -75,22 +75,14 @@ exports.index = function (req, res) {
     .catch(handleError(res));
 };
 
-// Gets a single Search from the DB
-exports.userShow = function (req, res) {
-  Search.findAsync({userId: req.params.id})
-    .then(handleEntityNotFound(res))
-    .then(function (result) {
-      if (result.userId === req.user._id) {
-        responseWithResult(res)(result);
-      } else {
-        // reject if not the owner of record
-        return res.status(403).end();
-      }
-    })
+// Gets a single Search by req.user._id from the DB
+exports.showMe = function (req, res) {
+  Search.findAsync({userId: req.user._id})
+    .then(responseWithResult(res))
     .catch(handleError(res));
 };
 
-// Gets a single Search by userId from the DB
+// Gets a single Search
 exports.show = function (req, res) {
   Search.findByIdAsync(req.params.id)
     .then(handleEntityNotFound(res))
