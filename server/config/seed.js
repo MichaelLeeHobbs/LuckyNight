@@ -7,7 +7,9 @@
 import Thing from '../api/thing/thing.model';
 import User from '../api/user/user.model';
 import Bar from '../api/bar/bar.model';
+import Search from '../api/search/search.model';
 
+Search.find({}).removeAsync();
 Thing.find({}).removeAsync()
   .then(function () {
     Thing.create({
