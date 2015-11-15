@@ -7,10 +7,10 @@
     cookie.search   = 'luckyNightSearch';
     var currentUser = Auth.getCurrentUser();
     var isLoggedIn  = false;
-    var comment     = console.log.bind(console);
-    //var comment                = function () {};
-    var debug = console.log.bind(console);
-    //var debug                = function () {};
+    //var comment     = console.log.bind(console);
+    var comment                = function () {};
+    //var debug = console.log.bind(console);
+    var debug                = function () {};
     self.searchField    = undefined;
     self.results        = [];
     self.hasResults     = false;
@@ -36,8 +36,6 @@
         return;
       }
       var found = bussiness.visitors.some(function (ele, i, arr) {
-        console.log(ele.visitorId);
-        console.log(currentUser._id);
         if (ele.visitorId === currentUser._id) {
           $http.delete('/api/bars/' + ele.recId);
           arr.splice(i, 1);
@@ -70,9 +68,8 @@
       // check if we already have a stored search
       getSearchFromServer()
         .then(function (result) {
-          console.log(result.id);
           // if no searchId create a search
-          if (result.id === undefined) {
+          if (result === undefined) {
             $http.post('/api/searchs', {userId: currentUser._id, search: search})
               .then(function (res) {
                 return res.data._id;
@@ -94,7 +91,6 @@
       return $http.get('/api/searchs/me').then(
         // get store search
         function (response) {
-          console.log(response);
           if (response.data.length > 0) {
             return {search: response.data[0].search, id: response.data[0]._id};
           }
@@ -121,10 +117,9 @@
 
     function getSearch() {
       debug('getSearch');
-
+      // use a promise because getSearchFromServer returns one
       return $q(function (resolve, reject) {
         var search = {search: undefined, id: undefined};
-        console.log('loggedIn: ' + isLoggedIn);
         if (isLoggedIn) {
           getSearchFromServer()
             .then(function (result) {
@@ -147,7 +142,6 @@
 
     function onLoad() {
       debug('onLoad');
-      // Auth.isLoggedIn can take time to resolve or something?
       getSearch().then(function (result) {
         self.searchField    = result.search;
         self.storedSearchId = result.id;
@@ -164,7 +158,6 @@
       onLoad();
     });
   }
-
 
   angular.module('luckyNightApp')
     .controller('MainController', MainController);
