@@ -2,34 +2,29 @@
 (function () {
 
   function MainController($scope, $http, socket, $window, $cookies, Auth, $q) {
-    var self                   = this;
-    var cookieLuckyNightSearch = 'luckyNightSearch';
-    var currentUser            = Auth.getCurrentUser();
-    self.searchField           = undefined;
-    self.results               = [];
-    self.hasResults            = false;
-    self.storedSearchId        = undefined;
+    var self        = this;
+    var cookie      = {};
+    cookie.search   = 'luckyNightSearch';
+    var currentUser = Auth.getCurrentUser();
+    var isLoggedIn  = false;
+    var comment     = console.log.bind(console);
+    //var comment                = function () {};
+    var debug = console.log.bind(console);
+    //var debug                = function () {};
+    self.searchField    = undefined;
+    self.results        = [];
+    self.hasResults     = false;
+    self.storedSearchId = undefined;
 
-    self.search = function () {
-      $http.get('/api/bars/' + self.searchField).then(function (response) {
-        self.results    = response.data;
-        self.hasResults = true;
-        socket.syncUpdates('bar', self.results);
-
-        if (Auth.isLoggedIn()) {
-          if (self.storedSearchId === undefined) {
-            $http.post('/api/searchs', {userId: currentUser._id, search: self.searchField})
-              .then(function (res) {
-                self.storedSearchId = res.data._id;
-              });
-          }
-          else {
-            console.log('storeSearchId: ' + self.storedSearchId);
-            $http.put('/api/searchs/' + self.storedSearchId, {userId: currentUser._id, search: self.searchField});
-          }
-        }
-      });
-      $cookies.put(cookieLuckyNightSearch, self.searchField);
+    self.search = function (search) {
+      debug('searching /api/bars/');
+      $http.get('/api/bars/' + search)
+        .then(function (response) {
+          self.results    = response.data;
+          self.hasResults = true;
+          socket.syncUpdates('bar', self.results);
+          setSearch(self.searchField);
+        });
     };
 
     self.openNew = function (url) {
@@ -37,6 +32,9 @@
     };
 
     self.toggleGoing = function (bussiness) {
+      if (!isLoggedIn) {
+        return;
+      }
       var found = bussiness.visitors.some(function (ele, i, arr) {
         console.log(ele.visitorId);
         console.log(currentUser._id);
@@ -55,80 +53,118 @@
           visitor:   currentUser.name,
           visitorId: currentUser._id
         })
-        .then(function(res){
+          .then(function (res) {
             bussiness.visitors.push({name: currentUser.name, visitorId: currentUser._id, recId: res.data._id});
           });
       }
     };
-    /*
-     this.addThing = function() {
-     if (self.newThing === '') {
-     return;
-     }
-     $http.post('/api/things', { name: self.newThing });
-     self.newThing = '';
-     };
 
-     this.deleteThing = function(thing) {
-     $http.delete('/api/bars/' + thing._id);
-     };
-     */
     $scope.$on('$destroy', function () {
       socket.unsyncUpdates('bar');
     });
 
-    // onLoad logic here
+    // set search on sever
+    // returns record id
+    function setSearchOnServer(search) {
+      debug('setSearchOnServer');
+      // check if we already have a stored search
+      getSearchFromServer()
+        .then(function (result) {
+          console.log(result.id);
+          // if no searchId create a search
+          if (result.id === undefined) {
+            $http.post('/api/searchs', {userId: currentUser._id, search: search})
+              .then(function (res) {
+                return res.data._id;
+              });
+          }
+          // else update existing search
+          else {
+            $http.put('/api/searchs/' + result.id, {userId: currentUser._id, search: search})
+              .then(function (res) {
+                return res.data._id;
+              });
+          }
+        });
+    }
 
     // user promise for search as getting user info from db maybe slow
+    function getSearchFromServer() {
+      debug('getSearchFromServer');
+      return $http.get('/api/searchs/me').then(
+        // get store search
+        function (response) {
+          console.log(response);
+          if (response.data.length > 0) {
+            return {search: response.data[0].search, id: response.data[0]._id};
+          }
+        }); // end $http.get
+    } // end getStoreSearchFromServer
+
+    function getSearchFromLocal() {
+      debug('getSearchFromLocal');
+      return $cookies.get(cookie.search);
+    }
+
+    function setSearchOnLocal(search) {
+      debug('setSearchOnLocal');
+      $cookies.put(cookie.search, search);
+    }
+
+    function setSearch(search) {
+      debug('setSearch');
+      setSearchOnLocal(search);
+      if (isLoggedIn) {
+        setSearchOnServer(search);
+      }
+    }
+
     function getSearch() {
+      debug('getSearch');
+
       return $q(function (resolve, reject) {
-        // check if user has stored search
-        if (Auth.isLoggedIn()) {
-          console.log('logged in getting search');
-
-          // todo remove debug
-          $http.get('/api/searchs').then(function(res) {
-            console.log('search db dump');
-            console.log(res);
-          });
-
-          $http.get('/api/searchs/me').then(
-            // get store search
-            function (response) {
-              console.log(response);
-              if (response.data.length > 0) {
-                console.log('using server search');
-                resolve({search: response.data[0].search, id: response.data[0]._id});
-              } else {
-                console.log('using cookie search');
-                resolve($cookies.get(cookieLuckyNightSearch));
+        var search = {search: undefined, id: undefined};
+        console.log('loggedIn: ' + isLoggedIn);
+        if (isLoggedIn) {
+          getSearchFromServer()
+            .then(function (result) {
+              if (result !== undefined) {
+                search.search = result.search;
+                search.id     = result.id;
               }
-
-            },
-            // fall back to cookie
-            function () {
-              console.log('fallback');
-              console.log('using cookie search');
-              resolve({search: $cookies.get(cookieLuckyNightSearch), id: undefined});
+              else {
+                search.search = getSearchFromLocal();
+              }
+              resolve(search);
             });
         }
-        // else check if they have stored search in cookie
         else {
-          resolve({search: $cookies.get(cookieLuckyNightSearch), id: undefined});
+          search.search = getSearchFromLocal();
+          resolve(search);
         }
       });
     }
 
-    getSearch().then(function (result) {
-      if (result !== undefined) {
+    function onLoad() {
+      debug('onLoad');
+      // Auth.isLoggedIn can take time to resolve or something?
+      getSearch().then(function (result) {
         self.searchField    = result.search;
         self.storedSearchId = result.id;
-        self.search();
-      }
+        if (self.searchField !== undefined) {
+          comment('searching for ' + self.searchField);
+          self.search(self.searchField);
+        }
+      });
+    } // end onLoad
+
+    // make sure this promise has resolved before we do onLoad
+    Auth.isLoggedIn(function (bool) {
+      isLoggedIn = bool;
+      onLoad();
     });
-
-
   }
+
 
   angular.module('luckyNightApp')
     .controller('MainController', MainController);

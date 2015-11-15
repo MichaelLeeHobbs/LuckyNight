@@ -99,13 +99,25 @@ exports.show = function (req, res) {
 
 // Creates a new Search in the DB
 exports.create = function (req, res) {
+  console.log('search create req.body');
+  console.log(req.body);
   // reject if not the owner of the search or adim
   if (!isOwnerOfReq(req)) {
     return res.status(403).end();
   }
-  Search.createAsync(req.body)
-    .then(responseWithResult(res, 201))
-    .catch(handleError(res));
+  if (req.body.search === undefined || req.body.userId === undefined){
+    return res.status(400).end();
+  }
+  Search.findAsync({userId: req.user._id})
+    .then(function(result){
+      if (result.length > 0) {
+        return res.status(409).end();
+      } else {
+        Search.createAsync(req.body)
+          .then(responseWithResult(res, 201))
+          .catch(handleError(res));
+      }
+    });
 };
 
 // Updates an existing Search in the DB
