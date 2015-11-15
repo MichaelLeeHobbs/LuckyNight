@@ -55,7 +55,7 @@
                       tooltip="More">&blacktriangledown;</button>
               <button ng-hide="!result.showMore" type="button" class="close btnTriangle pull-right" ng-click="result.showMore = false"
                       tooltip="Less">&blacktriangle;</button>
-              <span ng-click="main.toggleGoing(result)" class="btn btn-default pull-right">{{result.visitors.length}} GOING</span>
+              <span ng-click="main.toggleGoing(result)" class="btn btn-default pull-right" tooltip="{{main.goingToolTip(result)}}">{{result.visitors.length}} GOING</span>
             </div>
           </div>
           <div ng-hide="!result.showMore" class="row">

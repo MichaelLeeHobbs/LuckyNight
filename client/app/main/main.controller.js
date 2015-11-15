@@ -6,7 +6,7 @@
     var cookie      = {};
     cookie.search   = 'luckyNightSearch';
     var currentUser = Auth.getCurrentUser();
-    var isLoggedIn  = false;
+    self.isLoggedIn  = false;
     //var comment     = console.log.bind(console);
     var comment                = function () {};
     //var debug = console.log.bind(console);
@@ -30,12 +30,27 @@
         });
     };
 
+    self.goingToolTip = function(bussiness) {
+      if (self.isLoggedIn) {
+        var found = bussiness.visitors.some(function (ele, i, arr) {
+          if (ele.visitorId === currentUser._id) {
+            return true;
+          }
+        });
+        if (found) {
+          return "I'm not going =(";
+        }
+        return "RSVP!";
+      }
+      return "You must login to RSVP.";
+    };
+
     self.openNew = function (url) {
       $window.open(url);
     };
 
     self.toggleGoing = function (bussiness) {
-      if (!isLoggedIn) {
+      if (!self.isLoggedIn) {
         return;
       }
       var found = bussiness.visitors.some(function (ele, i, arr) {
@@ -113,7 +128,7 @@
     function setSearch(search) {
       debug('setSearch');
       setSearchOnLocal(search);
-      if (isLoggedIn) {
+      if (self.isLoggedIn) {
         setSearchOnServer(search);
       }
     }
@@ -123,7 +138,7 @@
       // use a promise because getSearchFromServer returns one
       return $q(function (resolve, reject) {
         var search = {search: undefined, id: undefined};
-        if (isLoggedIn) {
+        if (self.isLoggedIn) {
           getSearchFromServer()
             .then(function (result) {
               if (result !== undefined) {
@@ -157,7 +172,7 @@
 
     // make sure this promise has resolved before we do onLoad
     Auth.isLoggedIn(function (bool) {
-      isLoggedIn = bool;
+      self.isLoggedIn = bool;
       onLoad();
     });
   }
