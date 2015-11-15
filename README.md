@@ -15,12 +15,12 @@ This project was generated with the [Angular Full-Stack Generator](https://githu
 <li>Task 001: <strike>(US:2-4)  Setup local auth</strike></li>
 <li>Task 002: <strike>(US:2-3)  Add API end point to add/remove user from a bar</strike></li>
 <li>Task 003: <strike>(US:  1)  Add API end point to get bars/clubs near user search location from Yelp to include other users who have added themselves to the bar</strike></li>
-<li>Task 004: (US:  1)  Create view with nearby bars with search filter
+<li>Task 004: </strike>(US:  1)  Create view with nearby bars with search filter</strike>
   <ol>
     <li>004.1 <strike>If user is logged in check if they have a stored search, if so use that search initially</strike></li>
     <li>004.2 <strike>If user is not logged in check if user has a search stored in cookies</strike></li>
     <li>004.3 <strike>If user searches store it/update stored search</strike></li>
-    <li>004.4 Style view</li>
+    <li>004.4 <strike>Style view</strike></li>
   </ol>
 </li>
 <li>Task 005: <strike>(US:  4)  Store users search in cookie for when they are not logged in</strike></li>
