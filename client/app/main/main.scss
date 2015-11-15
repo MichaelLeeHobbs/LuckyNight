@@ -1,10 +1,12 @@
-.thing-form {
+.main-form {
   margin: 20px 0;
 }
 
 #banner {
   border-bottom: none;
   margin-top: -20px;
+  background: $color-secondary;
+  color: $color-text;
 }
 
 #banner h1 {
@@ -24,4 +26,62 @@
 
 .navbar-text {
   margin-left: 15px;
+}
+
+.navbar a:hover,  a:focus {
+  color: white !important;
+}
+
+.navbar {
+  background: $color-primary;
+  color: $color-text;
+  border-color: $color-secondary;
+}
+
+.nightlifeLoc {
+  background: $color-secondary;
+  border-radius: 5px;
+
+  margin-top: 10px;
+  padding: 10px;
+}
+
+.btnTriangle {
+  color: white !important;
+}
+
+.close {
+  margin-left: 10px;
+}
+
+.img-responsive {
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.btn {
+  background: $color-primary;
+  color: $color-text;
+  border-color: $color-primary;
+  margin-left: 5px;
+}
+
+.search:hover, .search:focus {
+  background: white;
+  color: black;
+  border-color: $color-primary;
+}
+
+hr {
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+.search {
+  background: $color-secondary;
+  border-color: $color-secondary;
+}
+
+.form-control {
+  border-color: $color-primary;
 }

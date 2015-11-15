@@ -8,11 +8,20 @@ $fa-font-path: "../bower_components/font-awesome/fonts";
  * App-wide Styles
  */
 
+$color-background: #1B1C1D;
+$color-primary: #222427;
+$color-secondary: #0B1119;
+$color-text: #868B93;
+
 .browserupgrade {
   margin: 0.2em 0;
-  background: #ccc;
-  color: #000;
+  background: $color-background;
+  color: $color-text;
   padding: 0.2em 0;
+}
+body {
+  background: $color-primary;
+  color: $color-text;
 }
 
 // Component styles are injected through grunt
