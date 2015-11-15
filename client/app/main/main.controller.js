@@ -6,11 +6,11 @@
     var cookie      = {};
     cookie.search   = 'luckyNightSearch';
     var currentUser = Auth.getCurrentUser();
-    self.isLoggedIn  = false;
+    self.isLoggedIn = false;
     //var comment     = console.log.bind(console);
-    var comment                = function () {};
+    var comment = function () {};
     //var debug = console.log.bind(console);
-    var debug                = function () {};
+    var debug           = function () {};
     self.searchField    = undefined;
     self.results        = [];
     self.hasResults     = false;
@@ -30,20 +30,24 @@
         });
     };
 
-    self.goingToolTip = function(bussiness) {
+    self.goingToolTip = function (bussiness) {
       if (self.isLoggedIn) {
-        var found = bussiness.visitors.some(function (ele, i, arr) {
-          if (ele.visitorId === currentUser._id) {
-            return true;
-          }
-        });
+        var found = false;
+        if (bussiness.visitors !== undefined) {
+          found = bussiness.visitors.some(function (ele, i, arr) {
+            if (ele.visitorId === currentUser._id) {
+              return true;
+            }
+          });
+        }
         if (found) {
           return "I'm not going =(";
         }
         return "RSVP!";
       }
       return "You must login to RSVP.";
-    };
+    }
+    ;
 
     self.openNew = function (url) {
       $window.open(url);
@@ -57,6 +61,7 @@
         if (ele.visitorId === currentUser._id) {
           $http.delete('/api/bars/' + ele.recId);
           arr.splice(i, 1);
+          return true;
         }
       });
 
@@ -180,4 +185,5 @@
   angular.module('luckyNightApp')
     .controller('MainController', MainController);
 
-})();
+})
+();
