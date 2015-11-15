@@ -25,6 +25,6 @@ This project was generated with the [Angular Full-Stack Generator](https://githu
 </li>
 <li>Task 005: <strike>(US:  4)  Store users search in cookie for when they are not logged in</strike></li>
 <li>Task 006: <strike>(US:  4)  Store users search on server, should this be in the users table or a new table?</strike></li>
-<li>Task 007: (US:1-4)  Deploy to Heroku</li>
-<li>Task 008: (US:1-4)  Reconfigure/Setup auth on Heroku</li>
+<li>Task 007: <strike>(US:1-4)  Deploy to Heroku</strike></li>
+<li>Task 008: <strike>(US:1-4)  Reconfigure/Setup auth on Heroku</strike></li>
 </ol>
