@@ -24,6 +24,12 @@ body {
   color: $color-text;
 }
 
+.loginContainer {
+  background-color: $color-secondary;
+  border-radius: 10px;
+  padding-bottom: 10px;
+}
+
 // Component styles are injected through grunt
 // injector
 @import 'admin/admin.scss';
