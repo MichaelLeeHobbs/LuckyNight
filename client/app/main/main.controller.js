@@ -25,7 +25,7 @@
         .then(function (response) {
           self.results    = response.data;
           self.hasResults = true;
-          socket.syncUpdates('bar', self.results);
+          //socket.syncUpdates('bar', self.results);
           setSearch(self.searchField);
         });
     };
@@ -81,7 +81,7 @@
     };
 
     $scope.$on('$destroy', function () {
-      socket.unsyncUpdates('bar');
+      //socket.unsyncUpdates('bar');
     });
 
     // set search on sever
