@@ -18,6 +18,9 @@
 
     self.search = function (search) {
       debug('searching /api/bars/');
+      if (search === '') {
+        return;
+      }
       $http.get('/api/bars/' + search)
         .then(function (response) {
           self.results    = response.data;
